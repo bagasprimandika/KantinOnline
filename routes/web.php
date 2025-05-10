@@ -23,6 +23,14 @@ use App\Http\Controllers\GoogleController;
 |
 */
 
+
+
+// Halaman verifikasi email
+Route::get('/email/verify', function () {
+    return view('auth.verify');
+})->middleware(['auth', 'verified'])->name('verification.notice');
+
+
 Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
 
@@ -50,6 +58,8 @@ Route::group(['middleware' => ['auth', 'customer']], function () {
         Route::post('/keranjang/{detpesanan:id}', [ShopController::class, 'update_qty'])->name('update_qty');
         Route::delete('/keranjang/{detpesanan:id}', [ShopController::class, 'delete_qty'])->name('delete_qty');
         Route::match(['get', 'post'], '/update-password', [HomeController::class, 'update_password'])->name('update_password');
+        Route::get('/pesanan/{pesanan}/bayar', [PesananController::class, 'bayar'])->name('pesanan.bayar');
+
         Route::post('/pesanan/{pesanan:no_pesanan}', [ShopController::class, 'pesanan_selesai'])->name('pesanan_selesai');
         Route::match(['get', 'post'], '/register-seller', [HomeController::class, 'register_seller'])->name('register_seller');
         Route::post('/shop/tambah_keranjang/{produk:id}', [ShopController::class, 'tambah_keranjang'])->name('tambah_keranjang');

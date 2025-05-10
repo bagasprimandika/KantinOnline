@@ -8,6 +8,8 @@ use App\Models\Store;
 use App\Models\Pesanan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Midtrans\Snap;
+use Midtrans\Config;
 
 class PesananController extends Controller
 {
@@ -37,6 +39,33 @@ class PesananController extends Controller
 
         return view('pesanan.konfirmasi', $data);
     }
+
+    public function bayar(Pesanan $pesanan)
+    {
+        Config::$serverKey = config('midtrans.serverKey');
+        Config::$isProduction = config('midtrans.isProduction');
+        Config::$isSanitized = config('midtrans.isSanitized');
+        Config::$is3ds = config('midtrans.is3ds');
+
+        $params = [
+            'transaction_details' => [
+                'order_id' => $pesanan->no_pesanan,
+                'gross_amount' => $pesanan->total,
+            ],
+            'customer_details' => [
+                'first_name' => $pesanan->user->name,
+                'email' => $pesanan->user->email,
+            ],
+        ];
+
+        $snapToken = Snap::getSnapToken($params);
+
+        return view('pesanan.bayar', [
+            'snapToken' => $snapToken,
+            'pesanan' => $pesanan
+        ]);
+    }
+
 
     public function konfirmasi_bayar(Pesanan $pesanan)
     {

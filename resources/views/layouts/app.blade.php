@@ -22,6 +22,10 @@
 </head>
 
 <body>
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -84,6 +88,36 @@
             @yield('content')
         </main>
     </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Tampilkan loader setiap kali link internal diklik
+            document.querySelectorAll('a[href]:not([target="_blank"]):not([href^="#"])').forEach(function(el) {
+                el.addEventListener('click', function(e) {
+                    // Cek jika bukan logout form
+                    if (!el.hasAttribute('data-no-loader')) {
+                        document.getElementById('preloder').style.display = 'flex';
+                    }
+                });
+            });
+        });
+
+        // Sembunyikan loader saat halaman selesai dimuat
+        window.addEventListener("load", function() {
+            const loader = document.getElementById('preloder');
+            const app = document.getElementById('app');
+
+
+            // Tambahkan class 'fade-out'
+            loader.classList.add('fade-out');
+
+            // Setelah animasi selesai (500ms), sembunyikan dan tampilkan app
+            setTimeout(() => {
+                loader.style.display = 'none';
+                app.style.display = 'block';
+            }, 500); // waktu sesuai dengan transition di CSS
+        });
+    </script>
+
 </body>
 
 </html>
