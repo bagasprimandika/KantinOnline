@@ -12,7 +12,10 @@ class Pesanan extends Model
 
     public function user()
     {
-        return $this->hasOne(User::class, 'id', 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
+        if (!$pesanan->user) {
+            return back()->withErrors(['error' => 'User tidak ditemukan untuk pesanan ini.']);
+        }
     }
 
     public function store()
